@@ -3,28 +3,25 @@ version: "3.9"
 services:
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8123
-    volumes:
-      - .:/app
-      - media:/app/media
-      - static:/app/static
+    container_name: casa_vibranti_web
+    restart: unless-stopped
+    env_file:
+      - .env.production
     ports:
       - "8123:8123"
-    environment:
-      DB_PSQL_HOST: db
-      DB_PSQL_NAME: casa_v_db
-      DB_PSQL_USER: casa_v_admin
-      DB_PSQL_PASSWORD: casa_v_password
-      DB_PSQL_PORT: "5432"
+    volumes:
+      - media:/app/media
+      - static:/app/static
+      - runtime:/app/runtime
     depends_on:
       - db
 
   db:
     image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: casa_v_db
-      POSTGRES_USER: casa_v_admin
-      POSTGRES_PASSWORD: casa_v_password
+    container_name: casa_vibranti_db
+    restart: unless-stopped
+    env_file:
+      - .env.production
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -32,3 +29,4 @@ volumes:
   postgres_data:
   media:
   static:
+  runtime:
