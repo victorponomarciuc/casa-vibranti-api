@@ -51,9 +51,12 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "drf_spectacular",
     "drf_spectacular_sidecar",
+    "django_filters",
     # Our apps
     'apps.common.apps.CommonConfig',
     'apps.cart.apps.CartConfig',
+    'apps.categories.apps.CategoriesConfig',
+    'apps.dashboard.apps.DashboardConfig',
     'apps.favorites.apps.FavoritesConfig',
     'apps.orders.apps.OrdersConfig',
     'apps.products.apps.ProductsConfig',
@@ -94,30 +97,30 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+DB_HOST = os.environ.get("DB_PSQL_HOST")
+if DB_HOST:
+    DB_SSL_MODE = os.environ.get("DB_PSQL_SSL_MODE", "prefer" if DB_HOST == "localhost" else "require")
+    DATABASES = {
+        'default': {
+            "ENGINE": "django.db.backends.postgresql",
+            'NAME': os.environ.get("DB_PSQL_NAME", 'casa_v_db'),
+            'USER': os.environ.get("DB_PSQL_USER", 'casa_v_admin'),
+            'PASSWORD': os.environ.get("DB_PSQL_PASSWORD", '5n1H4PRngd4Jp0yF'),
+            'HOST': DB_HOST,
+            'PORT': os.environ.get("DB_PSQL_PORT", '5432'),
+            "CONN_MAX_AGE": 120,
+            "OPTIONS": {
+                "sslmode": DB_SSL_MODE,
+            },
+        }
     }
-}
-
-# DB_HOST = os.environ.get("DB_PSQL_HOST", 'localhost')
-# DB_SSL_MODE = os.environ.get("DB_SSL_MODE", "prefer" if DB_HOST == "localhost" else "require")
-#
-# DATABASES = {
-#     'default': {
-#         "ENGINE": "django.db.backends.postgresql",
-#         'NAME': os.environ.get("DB_PSQL_NAME", 'casa_v_db'),
-#         'USER': os.environ.get("DB_PSQL_USER", 'casa_v_admin'),
-#         'PASSWORD': os.environ.get("DB_PSQL_PASSWORD", '5n1H4PRngd4Jp0yF'),
-#         'HOST': DB_HOST,
-#         'PORT': '5432',
-#         "CONN_MAX_AGE": 120,
-#         "OPTIONS": {
-#             "sslmode": DB_SSL_MODE,
-#         },
-#     }
-# }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation
