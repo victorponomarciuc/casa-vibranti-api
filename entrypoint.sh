@@ -22,7 +22,7 @@ python manage.py collectstatic --noinput || true
 echo "Starting app..."
 # If you have ASGI (Django Channels), replace wsgi with asgi and use uvicorn workers.
 # Default: WSGI
-exec gunicorn config.wsgi:application \
+exec gunicorn backend.wsgi:application \
   --bind 0.0.0.0:8123 \
   --workers 3 \
   --timeout 120
