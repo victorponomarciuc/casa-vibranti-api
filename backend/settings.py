@@ -53,6 +53,10 @@ INSTALLED_APPS = [
     "drf_spectacular_sidecar",
     # Our apps
     'apps.common.apps.CommonConfig',
+    'apps.cart.apps.CartConfig',
+    'apps.favorites.apps.FavoritesConfig',
+    'apps.orders.apps.OrdersConfig',
+    'apps.products.apps.ProductsConfig',
 ]
 
 MIDDLEWARE = [
