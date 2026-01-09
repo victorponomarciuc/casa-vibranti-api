@@ -10,7 +10,7 @@ from apps.products.models import Product, ProductAttribute, ProductMedia, Produc
 
 class ProductMediaInline(TabularInline):
     model = ProductMedia
-    extra = 0
+    extra = 1
 
     # Unfold sortable inlines
     ordering_field = "sort_order"
@@ -24,7 +24,6 @@ class ProductMediaInline(TabularInline):
         "sort_order",
         "media_type",
         "file",
-        "external_url",
         "poster",
         "alt_text",
         "caption",
@@ -46,7 +45,7 @@ class ProductMediaInline(TabularInline):
 
 class ProductVariantInline(TabularInline):
     model = ProductVariant
-    extra = 0
+    extra = 1
 
     ordering_field = "sort_order"
     hide_ordering_field = True
@@ -62,7 +61,7 @@ class ProductVariantInline(TabularInline):
 
 class ProductAttributeInline(TabularInline):
     model = ProductAttribute
-    extra = 0
+    extra = 1
 
     ordering_field = "sort_order"
     hide_ordering_field = True
@@ -80,34 +79,34 @@ class ProductAdmin(TranslationAdmin, ModelAdmin):
     list_filter = ("kind", "category", "is_active")
     search_fields = ("title", "description", "category__label", "subcategory__label")
     autocomplete_fields = ("category", "subcategory")
+    radio_fields = {"kind": admin.HORIZONTAL}
 
     inlines = [ProductMediaInline, ProductVariantInline, ProductAttributeInline]
 
     fieldsets = (
         (
-            _("Basics"),
+            _("Tip / Тип"),
             {
-                "fields": ("kind", "title", "description", "category", "subcategory"),
-                "description": _("Минимум обязательных полей, остальное — ниже в удобных блоках."),
+                "fields": ("kind",),
+                "description": _("Selectați tipul: produs sau reclamă. / Сначала выберите тип: товар или реклама."),
             },
         ),
         (
-            _("Pricing"),
+            _("Bază / Основное"),
             {
-                "fields": ("price", "sale_price", "cta", "tags"),
-                "description": _("Укажите цену и скидку. Теги помогают фильтрам на витрине."),
+                "fields": ("title", "description", "category", "subcategory"),
+                "description": _("Câmpurile principale pentru produs sau reclamă. / Основные поля товара или рекламного блока."),
             },
         ),
         (
-            _("Links"),
+            _("Preț / Цена"),
             {
-                "fields": ("media_src", "poster", "href"),
-                "classes": ("collapse",),
-                "description": _("Ссылки для внешнего медиа, если не загружаете файлы."),
+                "fields": ("price", "sale_price", "cta", "href", "tags"),
+                "description": _("Preț, buton și link pentru reclamă. / Цена, кнопка и ссылка для перехода, если это реклама."),
             },
         ),
         (
-            _("Visibility"),
+            _("Vizibilitate / Видимость"),
             {
                 "fields": ("is_active",),
                 "classes": ("collapse",),
@@ -122,6 +121,16 @@ class ProductMediaAdmin(TranslationAdmin, ModelAdmin):
     list_filter = ("media_type", "is_primary")
     search_fields = ("product__title", "alt_text", "caption")
     autocomplete_fields = ("product",)
+    fields = (
+        "product",
+        "media_type",
+        "file",
+        "poster",
+        "alt_text",
+        "caption",
+        "is_primary",
+        "sort_order",
+    )
 
     @admin.display(description=_("Preview"))
     def thumb(self, obj: ProductMedia) -> str:

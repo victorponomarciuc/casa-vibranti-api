@@ -1,0 +1,122 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+  <div class="dashboard">
+    <h1>{% trans "Tablou de bord / Панель" %}</h1>
+
+    <div class="module">
+      <table>
+        <caption>{% trans "Prezentare generală / Обзор" %}</caption>
+        <tbody>
+          <tr>
+            <th scope="row">{% trans "Total produse / Всего товаров" %}</th>
+            <td>{{ admin_dashboard.total_products }}</td>
+          </tr>
+          <tr>
+            <th scope="row">{% trans "Total comenzi / Всего заказов" %}</th>
+            <td>{{ admin_dashboard.total_orders }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="module">
+      <table>
+        <caption>{% trans "Comenzi pe lună / Заказы по месяцам" %}</caption>
+        <thead>
+          <tr>
+            <th>{% trans "Lună / Месяц" %}</th>
+            <th>{% trans "Total" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in admin_dashboard.orders_by_month %}
+            <tr>
+              <td>{{ item.month|date:"M Y" }}</td>
+              <td>{{ item.total|default:"0" }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="2">{% trans "Încă nu există date. / Данных пока нет." %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="module">
+      <table>
+        <caption>{% trans "Produse populare / Топ товары" %}</caption>
+        <thead>
+          <tr>
+            <th>{% trans "Produs / Товар" %}</th>
+            <th>{% trans "Cantitate / Количество" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in admin_dashboard.top_products %}
+            <tr>
+              <td>{{ item.product__title }}</td>
+              <td>{{ item.quantity }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="2">{% trans "Încă nu există date. / Данных пока нет." %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="module">
+      <table>
+        <caption>{% trans "Cele mai vizualizate / Самые просматриваемые" %}</caption>
+        <thead>
+          <tr>
+            <th>{% trans "Produs / Товар" %}</th>
+            <th>{% trans "Vizualizări / Просмотры" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in admin_dashboard.most_viewed %}
+            <tr>
+              <td>{{ item.title }}</td>
+              <td>{{ item.metrics__views_count|default:"0" }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="2">{% trans "Încă nu există date. / Данных пока нет." %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="module">
+      <table>
+        <caption>{% trans "Cele mai vândute / Самые продаваемые" %}</caption>
+        <thead>
+          <tr>
+            <th>{% trans "Produs / Товар" %}</th>
+            <th>{% trans "Cantitate / Количество" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in admin_dashboard.most_sold %}
+            <tr>
+              <td>{{ item.product__title }}</td>
+              <td>{{ item.quantity }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="2">{% trans "Încă nu există date. / Данных пока нет." %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+  </div>
+{% endblock %}

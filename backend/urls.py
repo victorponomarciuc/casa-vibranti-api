@@ -14,6 +14,7 @@ from drf_spectacular.views import (
 admin.site.site_header = 'Casa Vibranti Admin'
 admin.site.index_title = 'Casa Vibranti Admin'
 admin.site.site_title = 'Casa Vibranti Admin Panel'
+admin.site.index_template = "admin/dashboard.html"
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
     path("ckeditor5/", include('django_ckeditor_5.urls')),
