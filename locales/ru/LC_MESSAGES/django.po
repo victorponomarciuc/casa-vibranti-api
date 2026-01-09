@@ -1,0 +1,140 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+
+msgid "Imagine"
+msgstr "Изображение"
+
+msgid "Video"
+msgstr "Видео"
+
+msgid "Reclamă"
+msgstr "Реклама"
+
+msgid "Media"
+msgstr "Медиа"
+
+msgid "Previzualizare"
+msgstr "Предпросмотр"
+
+msgid "Variantă"
+msgstr "Вариант"
+
+msgid "Variante"
+msgstr "Варианты"
+
+msgid "Atribut"
+msgstr "Атрибут"
+
+msgid "Atribute"
+msgstr "Атрибуты"
+
+msgid "Tip"
+msgstr "Тип"
+
+msgid "Selectați tipul: produs sau reclamă."
+msgstr "Выберите тип: товар или реклама."
+
+msgid "Bază"
+msgstr "Основное"
+
+msgid "Câmpurile principale pentru produs sau reclamă."
+msgstr "Основные поля товара или рекламного блока."
+
+msgid "Preț"
+msgstr "Цена"
+
+msgid "Preț, buton și link pentru reclamă."
+msgstr "Цена, кнопка и ссылка для рекламы."
+
+msgid "Vizibilitate"
+msgstr "Видимость"
+
+msgid "Administrare site"
+msgstr "Администрирование сайта"
+
+msgid "Tablou de bord"
+msgstr "Панель управления"
+
+msgid "Ultimele 7 zile"
+msgstr "Последние 7 дней"
+
+msgid "Producție"
+msgstr "Продакшн"
+
+msgid "Total produse"
+msgstr "Всего товаров"
+
+msgid "Catalog activ"
+msgstr "Активный каталог"
+
+msgid "Total comenzi"
+msgstr "Всего заказов"
+
+msgid "Comenzi confirmate"
+msgstr "Подтвержденные заказы"
+
+msgid "Produs popular"
+msgstr "Популярный товар"
+
+msgid "Nu există date"
+msgstr "Нет данных"
+
+msgid "vânzări"
+msgstr "продажи"
+
+msgid "Actualizați statisticile"
+msgstr "Обновите статистику"
+
+msgid "Comenzi pe lună"
+msgstr "Заказы по месяцам"
+
+msgid "Evoluția comenzilor"
+msgstr "Динамика заказов"
+
+msgid "Lună"
+msgstr "Месяц"
+
+msgid "Total"
+msgstr "Итого"
+
+msgid "Nu există date încă."
+msgstr "Данных пока нет."
+
+msgid "Produse populare"
+msgstr "Популярные товары"
+
+msgid "Vânzări"
+msgstr "Продажи"
+
+msgid "Cele mai vizualizate"
+msgstr "Самые просматриваемые"
+
+msgid "Vizualizări"
+msgstr "Просмотры"
+
+msgid "Cele mai vândute"
+msgstr "Самые продаваемые"
+
+msgid "Cantitate"
+msgstr "Количество"
+
+msgid "Administrare catalog"
+msgstr "Управление каталогом"
+
+msgid "Adaugă %(name)s"
+msgstr "Добавить %(name)s"
+
+msgid "Corectați eroarea de mai jos."
+msgid_plural "Corectați erorile de mai jos."
+msgstr[0] "Исправьте ошибку ниже."
+msgstr[1] "Исправьте ошибки ниже."
+msgstr[2] "Исправьте ошибки ниже."
+
+msgid "Trageți cardurile pentru a reordona media."
+msgstr "Перетащите карточки, чтобы изменить порядок медиа."
+
+msgid "Adaugă media"
+msgstr "Добавить медиа"

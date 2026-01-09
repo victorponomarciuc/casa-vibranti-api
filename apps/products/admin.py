@@ -11,6 +11,7 @@ from apps.products.models import Product, ProductAttribute, ProductMedia, Produc
 class ProductMediaInline(TabularInline):
     model = ProductMedia
     extra = 1
+    template = "admin/products/product/includes/media_inline.html"
 
     # Unfold sortable inlines
     ordering_field = "sort_order"
@@ -33,7 +34,7 @@ class ProductMediaInline(TabularInline):
     readonly_fields = ("preview",)
     autocomplete_fields = ()  # keep if you have relations later
 
-    @admin.display(description=_("Preview"))
+    @admin.display(description=_("Previzualizare"))
     def preview(self, obj: ProductMedia) -> str:
         if obj and obj.file and obj.media_type == ProductMedia.MediaType.IMAGE:
             return format_html(
@@ -51,8 +52,8 @@ class ProductVariantInline(TabularInline):
     hide_ordering_field = True
 
     tab = True
-    verbose_name = _("Variant")
-    verbose_name_plural = _("Variants")
+    verbose_name = _("Variantă")
+    verbose_name_plural = _("Variante")
 
     fields = ("sort_order", "size", "color", "color_swatch", "sku", "price_override")
     # If size/color are FK -> can enable autocomplete:
@@ -67,8 +68,8 @@ class ProductAttributeInline(TabularInline):
     hide_ordering_field = True
 
     tab = True
-    verbose_name = _("Attribute")
-    verbose_name_plural = _("Attributes")
+    verbose_name = _("Atribut")
+    verbose_name_plural = _("Atribute")
 
     fields = ("sort_order", "name", "value")
 
@@ -81,32 +82,34 @@ class ProductAdmin(TranslationAdmin, ModelAdmin):
     autocomplete_fields = ("category", "subcategory")
     radio_fields = {"kind": admin.HORIZONTAL}
 
+    change_form_template = "admin/products/product/change_form.html"
+
     inlines = [ProductMediaInline, ProductVariantInline, ProductAttributeInline]
 
     fieldsets = (
         (
-            _("Tip / Тип"),
+            _("Tip"),
             {
                 "fields": ("kind",),
-                "description": _("Selectați tipul: produs sau reclamă. / Сначала выберите тип: товар или реклама."),
+                "description": _("Selectați tipul: produs sau reclamă."),
             },
         ),
         (
-            _("Bază / Основное"),
+            _("Bază"),
             {
                 "fields": ("title", "description", "category", "subcategory"),
-                "description": _("Câmpurile principale pentru produs sau reclamă. / Основные поля товара или рекламного блока."),
+                "description": _("Câmpurile principale pentru produs sau reclamă."),
             },
         ),
         (
-            _("Preț / Цена"),
+            _("Preț"),
             {
                 "fields": ("price", "sale_price", "cta", "href", "tags"),
-                "description": _("Preț, buton și link pentru reclamă. / Цена, кнопка и ссылка для перехода, если это реклама."),
+                "description": _("Preț, buton și link pentru reclamă."),
             },
         ),
         (
-            _("Vizibilitate / Видимость"),
+            _("Vizibilitate"),
             {
                 "fields": ("is_active",),
                 "classes": ("collapse",),
@@ -132,7 +135,7 @@ class ProductMediaAdmin(TranslationAdmin, ModelAdmin):
         "sort_order",
     )
 
-    @admin.display(description=_("Preview"))
+    @admin.display(description=_("Previzualizare"))
     def thumb(self, obj: ProductMedia) -> str:
         if obj.file and obj.media_type == ProductMedia.MediaType.IMAGE:
             return format_html(

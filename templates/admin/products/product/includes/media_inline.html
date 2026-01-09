@@ -1,0 +1,68 @@
+{% load i18n admin_urls %}
+<div class="js-inline-admin-formset inline-group" id="{{ inline_admin_formset.formset.prefix }}-group" data-inline-type="stacked" data-inline-formset="{{ inline_admin_formset.inline_formset_data }}">
+  <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+    <div class="flex flex-col gap-2 border-b border-slate-100 pb-4 md:flex-row md:items-center md:justify-between">
+      <div>
+        <h2 class="text-lg font-semibold text-slate-900">{{ inline_admin_formset.opts.verbose_name_plural|capfirst }}</h2>
+        <p class="text-sm text-slate-500">{% trans "Trageți cardurile pentru a reordona media." %}</p>
+      </div>
+      {% if inline_admin_formset.formset.non_form_errors %}
+        <div class="rounded-xl bg-rose-50 px-3 py-2 text-sm text-rose-600">
+          {{ inline_admin_formset.formset.non_form_errors }}
+        </div>
+      {% endif %}
+    </div>
+
+    {{ inline_admin_formset.formset.management_form }}
+
+    <div class="mt-4 space-y-4" data-dnd-container>
+      {% for inline_admin_form in inline_admin_formset %}
+        <div class="media-card rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm{% if forloop.last and inline_admin_formset.has_add_permission %} empty-form last-related{% endif %}" id="{{ inline_admin_formset.formset.prefix }}-{% if forloop.last and inline_admin_formset.has_add_permission %}empty{% else %}{{ forloop.counter0 }}{% endif %}"{% if not forloop.last or not inline_admin_formset.has_add_permission %} draggable="true" data-dnd-item{% endif %}>
+          {% if inline_admin_form.form.non_field_errors %}
+            <div class="mb-3 rounded-xl bg-rose-50 px-3 py-2 text-sm text-rose-600">
+              {{ inline_admin_form.form.non_field_errors }}
+            </div>
+          {% endif %}
+
+          {% for hidden in inline_admin_form.form.hidden_fields %}
+            {{ hidden }}
+          {% endfor %}
+
+          <div class="grid gap-4 md:grid-cols-2">
+            {% for field in inline_admin_form %}
+              {% if field.field.is_hidden %}
+                {{ field.field }}
+              {% else %}
+                <div class="space-y-1">
+                  <label class="text-sm font-medium text-slate-700">{{ field.label }}</label>
+                  {% if field.is_readonly %}
+                    <div class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">{{ field.contents }}</div>
+                  {% else %}
+                    <div class="mt-1">{{ field.field }}</div>
+                  {% endif %}
+                  {% if field.help_text %}
+                    <p class="text-xs text-slate-500">{{ field.help_text|safe }}</p>
+                  {% endif %}
+                  {% if field.errors %}
+                    <div class="text-sm text-rose-600">{{ field.errors }}</div>
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          {% if inline_admin_form.needs_explicit_pk_field %}{{ inline_admin_form.pk_field.field }}{% endif %}
+          {% if inline_admin_form.fk_field %}{{ inline_admin_form.fk_field.field }}{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if inline_admin_formset.has_add_permission %}
+      <div class="mt-4">
+        <a class="add-row inline-flex items-center justify-center rounded-full bg-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-700" href="#">
+          {% trans "Adaugă media" %}
+        </a>
+      </div>
+    {% endif %}
+  </section>
+</div>

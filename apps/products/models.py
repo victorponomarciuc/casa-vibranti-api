@@ -7,9 +7,9 @@ from apps.categories.models import Category, Subcategory
 
 
 class ProductKind(models.TextChoices):
-    IMAGE = "image", _("Image")
+    IMAGE = "image", _("Imagine")
     VIDEO = "video", _("Video")
-    AD = "ad", _("Ad")
+    AD = "ad", _("Reclamă")
 
 
 class Product(models.Model):
@@ -45,7 +45,7 @@ class Product(models.Model):
 
 class ProductMedia(models.Model):
     class MediaType(models.TextChoices):
-        IMAGE = "image", _("Image")
+        IMAGE = "image", _("Imagine")
         VIDEO = "video", _("Video")
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

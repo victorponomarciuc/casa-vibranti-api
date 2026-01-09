@@ -1,0 +1,175 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <script src="https://cdn.tailwindcss.com"></script>
+{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    .media-card[draggable="true"]:active {
+      cursor: grabbing;
+    }
+    .media-card.is-dragging {
+      opacity: 0.6;
+      border-style: dashed;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="min-h-screen bg-slate-50">
+    <div class="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-8">
+      {% if change and not is_popup %}
+        <div class="flex justify-end">
+          <ul class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+            {% change_form_object_tools %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <header class="flex flex-col gap-4 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p class="text-sm font-medium text-slate-500">{% trans "Administrare catalog" %}</p>
+          <h1 class="text-3xl font-semibold text-slate-900">
+            {% if add %}
+              {% blocktranslate with name=opts.verbose_name %}Adaugă {{ name }}{% endblocktranslate %}
+            {% else %}
+              {{ original|truncatewords:"18" }}
+            {% endif %}
+          </h1>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          {% submit_row %}
+        </div>
+      </header>
+
+      <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}{% if form_url %}action="{{ form_url }}" {% endif %}method="post" id="{{ opts.model_name }}_form" novalidate>
+        {% csrf_token %}
+        {% block form_top %}{% endblock %}
+
+        {% if is_popup %}<input type="hidden" name="{{ is_popup_var }}" value="1">{% endif %}
+        {% if to_field %}<input type="hidden" name="{{ to_field_var }}" value="{{ to_field }}">{% endif %}
+
+        {% if errors %}
+          <div class="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+            <p class="font-medium">
+              {% blocktranslate count counter=errors|length %}Corectați eroarea de mai jos.{% plural %}Corectați erorile de mai jos.{% endblocktranslate %}
+            </p>
+            {{ adminform.form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        <div class="flex flex-col gap-6">
+          {% for hidden in adminform.form.hidden_fields %}
+            {{ hidden }}
+          {% endfor %}
+
+          {% for fieldset in adminform %}
+            <section class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+              {% if fieldset.name %}
+                <div class="mb-4">
+                  <h2 class="text-lg font-semibold text-slate-900">{{ fieldset.name }}</h2>
+                  {% if fieldset.description %}
+                    <p class="text-sm text-slate-500">{{ fieldset.description|safe }}</p>
+                  {% endif %}
+                </div>
+              {% endif %}
+              <div class="grid gap-4 md:grid-cols-2">
+                {% for line in fieldset %}
+                  {% for field in line %}
+                    <div class="space-y-1">
+                      <label class="text-sm font-medium text-slate-700">{{ field.label }}</label>
+                      {% if field.is_readonly %}
+                        <div class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700">{{ field.contents }}</div>
+                      {% else %}
+                        <div class="mt-1">{{ field.field }}</div>
+                      {% endif %}
+                      {% if field.help_text %}
+                        <p class="text-xs text-slate-500">{{ field.help_text|safe }}</p>
+                      {% endif %}
+                      {% if field.errors %}
+                        <div class="text-sm text-rose-600">{{ field.errors }}</div>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                {% endfor %}
+              </div>
+            </section>
+          {% endfor %}
+
+          {% for inline_admin_formset in inline_admin_formsets %}
+            {% if inline_admin_formset.opts.model._meta.model_name == "productmedia" %}
+              {% include "admin/products/product/includes/media_inline.html" %}
+            {% else %}
+              {% include inline_admin_formset.opts.template %}
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="mt-6 flex flex-wrap items-center gap-2">
+          {% submit_row %}
+        </div>
+
+        {% block admin_change_form_document_ready %}
+          {{ block.super }}
+        {% endblock %}
+        {% prepopulated_fields_js %}
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const container = document.querySelector("[data-dnd-container]");
+      if (!container) {
+        return;
+      }
+
+      const updateSortOrder = () => {
+        const cards = Array.from(container.querySelectorAll("[data-dnd-item]"));
+        cards.forEach((card, index) => {
+          const sortInput = card.querySelector("input[name$='-sort_order']");
+          if (sortInput) {
+            sortInput.value = index + 1;
+          }
+        });
+      };
+
+      let draggedCard = null;
+
+      container.addEventListener("dragstart", (event) => {
+        const card = event.target.closest("[data-dnd-item]");
+        if (!card) {
+          return;
+        }
+        draggedCard = card;
+        card.classList.add("is-dragging");
+        event.dataTransfer.effectAllowed = "move";
+      });
+
+      container.addEventListener("dragend", () => {
+        if (draggedCard) {
+          draggedCard.classList.remove("is-dragging");
+        }
+        draggedCard = null;
+        updateSortOrder();
+      });
+
+      container.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        const target = event.target.closest("[data-dnd-item]");
+        if (!target || target === draggedCard) {
+          return;
+        }
+        const rect = target.getBoundingClientRect();
+        const shouldInsertAfter = event.clientY - rect.top > rect.height / 2;
+        container.insertBefore(draggedCard, shouldInsertAfter ? target.nextSibling : target);
+      });
+
+      updateSortOrder();
+    });
+  </script>
+{% endblock %}
