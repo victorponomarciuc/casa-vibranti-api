@@ -11,9 +11,9 @@ from drf_spectacular.views import (
 )
 
 
-admin.site.site_header = 'TokenTree Admin'
-admin.site.index_title = 'TokenTree Admin'
-admin.site.site_title = 'TokenTree Admin Panel'
+admin.site.site_header = 'Casa Vibranti Admin'
+admin.site.index_title = 'Casa Vibranti Admin'
+admin.site.site_title = 'Casa Vibranti Admin Panel'
 urlpatterns = [
     path('i18n/', include('django.conf.urls.i18n')),
     path("ckeditor5/", include('django_ckeditor_5.urls')),
