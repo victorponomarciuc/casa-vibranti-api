@@ -1,0 +1,20 @@
+name: Deploy Live
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy-live:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build and Deploy
+        run: |
+          docker compose --env-file .env.production up --build -d --force-recreate
+          docker system prune -a -f
+          docker image prune -a -f
