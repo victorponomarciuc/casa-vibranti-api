@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+from unfold.admin import ModelAdmin, TabularInline
 from apps.orders.models import Address, Order, OrderItem
 
 
@@ -11,7 +11,7 @@ class OrderItemInline(admin.TabularInline):
 
 
 @admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
+class OrderAdmin(ModelAdmin):
     list_display = ("id", "status", "payment_method", "total", "created_at")
     list_filter = ("status", "payment_method")
     search_fields = ("id", "user__email")
@@ -20,12 +20,12 @@ class OrderAdmin(admin.ModelAdmin):
 
 
 @admin.register(Address)
-class AddressAdmin(admin.ModelAdmin):
+class AddressAdmin(ModelAdmin):
     list_display = ("id", "first_name", "last_name", "email", "phone")
     search_fields = ("first_name", "last_name", "email", "phone")
 
 
 @admin.register(OrderItem)
-class OrderItemAdmin(admin.ModelAdmin):
+class OrderItemAdmin(ModelAdmin):
     list_display = ("order", "product", "quantity", "line_total")
     search_fields = ("order__id", "product__title")
