@@ -9,7 +9,6 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      # 1) ЖЁСТКИЙ PRE-CLEAN ДО checkout (иначе checkout падает)
       - name: Pre-clean workspace (fix EACCES)
         shell: bash
         run: |
@@ -17,32 +16,34 @@ jobs:
 
           WORKDIR="/home/deploy/actions-runner/_work/casa-vibranti-api/casa-vibranti-api"
 
-          # Если sudo доступен — чиним права и удаляем проблемные директории
           if command -v sudo >/dev/null 2>&1; then
             sudo chown -R deploy:deploy /home/deploy/actions-runner/_work || true
             sudo chmod -R u+rwX /home/deploy/actions-runner/_work || true
-
-            # Самая частая причина падения — runtime, чистим принудительно
             sudo rm -rf "$WORKDIR/runtime" || true
             sudo rm -rf "$WORKDIR" || true
           else
-            # Если sudo нет — хотя бы попытаемся обычным rm
             rm -rf "$WORKDIR/runtime" || true
             rm -rf "$WORKDIR" || true
           fi
 
-      # 2) Checkout (теперь ему есть что чистить и права уже норм)
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           clean: true
           fetch-depth: 1
 
-      # 3) Build & Deploy
+      - name: Fix docker state (remove conflicting manual containers)
+        shell: bash
+        run: |
+          set -euxo pipefail
+          docker rm -f casa-vibranti-api-db-1 || true
+          docker rm -f casa-vibranti-api-web-1 || true
+          docker compose --env-file .env.production down --remove-orphans || true
+
       - name: Build and Deploy
         shell: bash
         run: |
           set -euxo pipefail
-          docker compose --env-file .env.production up -d --build --force-recreate
+          docker compose --env-file .env.production up -d --build --force-recreate --remove-orphans
           docker image prune -f
           docker builder prune -f
