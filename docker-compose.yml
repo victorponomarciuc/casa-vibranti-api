@@ -3,8 +3,7 @@ version: "3.9"
 services:
   web:
     build: .
-    container_name: casa_vibranti_web
-    restart: unless-stopped
+    command: gunicorn backend.wsgi:application --bind 0.0.0.0:8123 --workers 3 --timeout 120
     env_file:
       - .env.production
     ports:
@@ -15,15 +14,15 @@ services:
       - runtime:/app/runtime
     depends_on:
       - db
+    restart: unless-stopped
 
   db:
     image: postgres:16-alpine
-    container_name: casa_vibranti_db
-    restart: unless-stopped
     env_file:
       - .env.production
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
 volumes:
   postgres_data:
